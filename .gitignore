@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Environment variables (NEVER commit)
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# Build output
+frontend/dist/
+frontend/.vite/
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.Python
+
+# Logs
+*.log
+backend/uvicorn.log
+backend/uvicorn_test.log
+backend/crawler.log
+frontend/vite.log
+frontend/vite_test.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large binary / data files
+backend/crawler/
+backend/mha_figures_all_platforms.json
+backend/uploads/
+backend/screenshot_login.png
+
+# Large uncompressed GLB originals (use .draco.glb versions)
+frontend/public/models/atlanta_office.glb
+frontend/public/models/modern_building_concepts.glb
+
+# Backup / temp files
+*.bak
+*.tmp
+
+# Claude local settings (personal IDE config)
+.claude/settings.local.json
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/

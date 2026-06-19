@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "myRoom":       "🏠 My Figure Room",
+    "virtualCity":  "🏙️ Virtual City",
+    "generate3d":   "✦ Generate 3D Figure",
+    "dashboard":    "📊 Dashboard",
+    "roomSub":      "Figure Collection & Display",
+    "citySub":      "City Exploration",
+    "gen3dSub":     "Create Figures with AI",
+    "dashboardSub": "Market Prices & Stats"
+  },
+  "login": {
+    "subtitle":       "Figure Price Dashboard",
+    "email":          "Email",
+    "or":             "or",
+    "continueGoogle": "Continue with Google",
+    "sendCode":       "Send Verification Code",
+    "checkEmail":     "Check your inbox",
+    "otpSentTo":      "We sent a 6-digit code to",
+    "otpSent":        "Code sent! Check your email.",
+    "otpResent":      "Code resent.",
+    "otpInvalid":     "Invalid or expired code. Please try again.",
+    "verify":         "Verify Code",
+    "resend":         "Resend Code",
+    "resendIn":       "Resend in {{secs}}s",
+    "changeEmail":    "Change email",
+    "verified":       "Verified!",
+    "redirecting":    "Redirecting you now…",
+    "guestBtn":       "Enter as Guest",
+    "guestDesc":      "No sign-up required — explore freely",
+    "terms":          "By logging in, you agree to the",
+    "termsLink":      "Terms of Service",
+    "error":          "An error occurred."
+  },
+  "city": {
+    "title":        "Virtual City",
+    "overview":     "Overview",
+    "thirdPerson":  "Third Person",
+    "firstPerson":  "First Person",
+    "vKey":         "V Key",
+    "freeExplore":  "Free Exploration",
+    "forward":      "Forward · Backward",
+    "turn":         "Turn Left · Turn Right",
+    "enterHint":    "Enter room when moving behind building",
+    "clickLock":    "Click screen → Lock mouse view",
+    "esc":          "Release",
+    "myRoom":       "My Room",
+    "moveEnter":    "Move forward to enter",
+    "distance":     "{{dist}}m"
+  },
+  "minimap": {
+    "me":    "● Me",
+    "myRoom":"■ My Room",
+    "north": "N"
+  },
+  "room": {
+    "myFigureRoom": "My Figure Room",
+    "chat":         "Chat",
+    "furniture":    "Furniture",
+    "randomAssign": "Random Assign",
+    "enterRoom":    "Enter Room"
+  },
+  "common": {
+    "logout":   "Logout",
+    "menu":     "Menu",
+    "pages":    "Pages",
+    "version":  "v0.1.0",
+    "emailAcc": "Email Account",
+    "loading":  "Loading…"
+  },
+  "guest": {
+    "badge": "Guest",
+    "info":  "Guest session — limited features"
+  }
+}

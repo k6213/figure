@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "myRoom":       "🏠 내 피규어 방",
+    "virtualCity":  "🏙️ 가상 도시",
+    "generate3d":   "✦ 3D 피규어 생성",
+    "dashboard":    "📊 대시보드",
+    "roomSub":      "피규어 컬렉션 & 전시",
+    "citySub":      "도시 탐험",
+    "gen3dSub":     "AI로 피규어 만들기",
+    "dashboardSub": "시세 & 통계"
+  },
+  "login": {
+    "subtitle":       "피규어 시세 대시보드",
+    "email":          "이메일",
+    "or":             "또는",
+    "continueGoogle": "Google로 계속하기",
+    "sendCode":       "인증 코드 보내기",
+    "checkEmail":     "이메일을 확인하세요",
+    "otpSentTo":      "6자리 코드를 보냈습니다 →",
+    "otpSent":        "코드를 보냈습니다! 이메일을 확인하세요.",
+    "otpResent":      "코드를 다시 보냈습니다.",
+    "otpInvalid":     "잘못되었거나 만료된 코드입니다. 다시 시도해주세요.",
+    "verify":         "코드 인증",
+    "resend":         "코드 재전송",
+    "resendIn":       "{{secs}}초 후 재전송",
+    "changeEmail":    "이메일 변경",
+    "verified":       "인증 완료!",
+    "redirecting":    "이동 중…",
+    "guestBtn":       "비회원으로 입장",
+    "guestDesc":      "가입 없이 자유롭게 탐험하세요",
+    "terms":          "로그인 시",
+    "termsLink":      "이용약관에 동의합니다",
+    "error":          "오류가 발생했습니다."
+  },
+  "city": {
+    "title":        "가상 도시",
+    "overview":     "전체보기",
+    "thirdPerson":  "3인칭",
+    "firstPerson":  "1인칭",
+    "vKey":         "V 키",
+    "freeExplore":  "자유 탐험",
+    "forward":      "전진 · 후진",
+    "turn":         "좌회전 · 우회전",
+    "enterHint":    "건물 뒤로 이동 시 방 입장",
+    "clickLock":    "화면 클릭 → 마우스 시점 잠금",
+    "esc":          "해제",
+    "myRoom":       "내 방",
+    "moveEnter":    "앞으로 이동하여 입장",
+    "distance":     "{{dist}}m"
+  },
+  "minimap": {
+    "me":    "● 나",
+    "myRoom":"■ 내 방",
+    "north": "N"
+  },
+  "room": {
+    "myFigureRoom": "내 피규어 방",
+    "chat":         "채팅",
+    "furniture":    "가구 배치",
+    "randomAssign": "랜덤 배정",
+    "enterRoom":    "방 입장"
+  },
+  "common": {
+    "logout":   "로그아웃",
+    "menu":     "메뉴",
+    "pages":    "페이지",
+    "version":  "v0.1.0",
+    "emailAcc": "이메일 계정",
+    "loading":  "로딩 중…"
+  },
+  "guest": {
+    "badge": "게스트",
+    "info":  "게스트 세션 — 일부 기능 제한"
+  }
+}
