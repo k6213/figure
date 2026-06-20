@@ -703,7 +703,7 @@ function SceneContents({
         opacity={0.38}
         scale={16}
         blur={1.2}
-        far={2.5}
+        far={0.5}
         resolution={512}
         color="#000015"
       />

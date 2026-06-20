@@ -494,23 +494,127 @@ function FigureDetailPanel({ figure, settings, onClose, onRotate, onToggleAutoRo
 }
 
 // ══════════════════════════════════════════════════════════
+//  Bottom menu bar (matches reference image)
+// ══════════════════════════════════════════════════════════
+function IconSearch() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
+    </svg>
+  )
+}
+function IconGrid() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  )
+}
+function IconPalette() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+      <path d="M12 2C6.5 2 2 6.5 2 12a10 10 0 0010 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.124a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+    </svg>
+  )
+}
+function IconCart() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" />
+    </svg>
+  )
+}
+function IconBox() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+    </svg>
+  )
+}
+function IconAvatar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" />
+    </svg>
+  )
+}
+function IconLogout() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  )
+}
+
+function BottomMenuBar({ onSearch, onLayout, onVisuals, onMarketplace, onCollection, onAvatar, onLogout, activeItem }) {
+  const items = [
+    { id: 'search',      label: 'Search\nCollection',     Icon: IconSearch      },
+    { id: 'layout',      label: 'Edit Showroom\nLayout',  Icon: IconGrid        },
+    { id: 'visuals',     label: 'Customize\nVisuals',     Icon: IconPalette     },
+    { id: 'marketplace', label: 'Marketplace /\nBuy & Sell', Icon: IconCart     },
+    { id: 'collection',  label: 'My\nCollection',         Icon: IconBox         },
+    { id: 'avatar',      label: 'Avatar',                 Icon: IconAvatar      },
+    { id: 'logout',      label: 'Logout',                 Icon: IconLogout      },
+  ]
+  const handlers = { search: onSearch, layout: onLayout, visuals: onVisuals, marketplace: onMarketplace, collection: onCollection, avatar: onAvatar, logout: onLogout }
+
+  return (
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30
+                    flex items-center
+                    bg-[#0d0d12]/[0.97] backdrop-blur-xl
+                    border border-white/[0.12]
+                    rounded-[28px] px-2 py-2
+                    shadow-2xl shadow-black/80
+                    gap-0.5">
+      {items.map(({ id, label, Icon }, idx) => {
+        const isActive = activeItem === id
+        const lines = label.split('\n')
+        return (
+          <button
+            key={id}
+            onClick={handlers[id]}
+            className={`relative flex flex-col items-center justify-center gap-1
+                        px-1 py-2 w-[50px]
+                        rounded-[16px]
+                        transition-all duration-150
+                        ${isActive
+                          ? 'bg-white/[0.12] text-white'
+                          : 'text-zinc-300 hover:text-white hover:bg-white/[0.08]'}`}
+          >
+            <Icon />
+            <span className="text-center leading-tight w-full" style={{ fontSize: '8px', fontWeight: 500, letterSpacing: '0.01em', whiteSpace: 'pre-line' }}>
+              {lines.map((l, i) => <span key={i} className="block truncate">{l}</span>)}
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════
 //  Main page
 // ══════════════════════════════════════════════════════════
 export default function FigureRoomPage() {
   const { data: figures = [] } = useGenerationList()
   const { logout } = useAuthStore()
   const navigate = useNavigate()
+  const { toggleTheme } = useThemeStore()
 
-  // ── Real-time chat socket connection ─────────────────────────────────────────────────
   const { sendMessage } = useChat()
 
   const [selectedFigure, setSelectedFigure]   = useState(null)
   const [collectionOpen, setCollectionOpen]   = useState(false)
+  const [furnitureOpen, setFurnitureOpen]     = useState(false)
   const [menuOpen, setMenuOpen]               = useState(false)
   const [figureOffsets, setFigureOffsets]     = useState({})
   const [figureSettings, setFigureSettings]   = useState({})
   const [cameraMode, setCameraMode]           = useState('overview')
   const [exiting, setExiting]                 = useState(false)
+  const [activeMenu, setActiveMenu]           = useState(null)
 
   const completedFigures = useMemo(
     () => figures.filter((g) => (g.state ?? g.status) === 'completed'),
@@ -595,12 +699,21 @@ export default function FigureRoomPage() {
     ? (figureSettings[selectedFigure.id ?? selectedFigure.generation_id] ?? { rotationY: 0, autoRotate: false })
     : null
 
-  const currentModeInfo = CAM_MODES.find((m) => m.id === cameraMode)
+  const handleMenuAction = (id) => {
+    setActiveMenu(prev => prev === id ? null : id)
+    if (id === 'search')      { setCollectionOpen(v => !v); setFurnitureOpen(false) }
+    if (id === 'layout')      { setFurnitureOpen(v => !v);  setCollectionOpen(false) }
+    if (id === 'visuals')     { toggleTheme() }
+    if (id === 'marketplace') { navigate('/dashboard') }
+    if (id === 'collection')  { navigate('/generate3d') }
+    if (id === 'avatar')      { setMenuOpen(true) }
+    if (id === 'logout')      { logout().then(() => navigate('/login', { replace: true })) }
+  }
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden">
 
-      {/* ── 3D 씬 ── */}
+      {/* ── 3D Scene ── */}
       <CityScene
         figures={completedFigures}
         onSelectFigure={handleSelect}
@@ -614,86 +727,25 @@ export default function FigureRoomPage() {
         className="w-full h-full"
       />
 
-      {/* ── Camera mode bar (top center) ── */}
-      <CameraModeBar mode={cameraMode} onChange={setCameraMode} />
+      {/* ── Bottom menu bar ── */}
+      <BottomMenuBar
+        activeItem={collectionOpen ? 'search' : furnitureOpen ? 'layout' : null}
+        onSearch={()      => handleMenuAction('search')}
+        onLayout={()      => handleMenuAction('layout')}
+        onVisuals={()     => handleMenuAction('visuals')}
+        onMarketplace={()  => handleMenuAction('marketplace')}
+        onCollection={()  => handleMenuAction('collection')}
+        onAvatar={()      => handleMenuAction('avatar')}
+        onLogout={()      => handleMenuAction('logout')}
+      />
 
-      {/* ── Top-left title ── */}
-      <div className="absolute top-5 left-5 pointer-events-none z-10">
-        <div className="bg-black/55 backdrop-blur-md border border-cyan-900/40 rounded-2xl px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <span className="text-sm">🏠</span>
-            <p className="text-xs font-bold text-cyan-200 tracking-wide">My Figure Room</p>
-          </div>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[9px] text-zinc-500">
-              {currentModeInfo?.icon} {currentModeInfo?.label}
-            </span>
-            <span className="text-[9px] text-zinc-700">·</span>
-            <span className="text-[9px] text-zinc-600">
-              {completedFigures.length} on display
-            </span>
-          </div>
-        </div>
-      </div>
+      {/* ── Furniture panel (controlled by bottom bar) ── */}
+      <FurnitureMenu externalOpen={furnitureOpen} onExternalToggle={setFurnitureOpen} />
 
-      {/* ── Top-right button group ── */}
-      <div className="absolute top-5 right-5 z-20 flex items-center gap-2">
-        <motion.button whileTap={{ scale: 0.92 }}
-          onClick={() => setCollectionOpen((v) => !v)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-md
-                      border transition-all duration-200 text-xs font-semibold
-                      ${collectionOpen
-                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                        : 'bg-black/45 border-white/12 text-zinc-400 hover:text-zinc-200'}`}>
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-            <path strokeLinecap="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-          </svg>
-          <span className="hidden sm:inline">Collection</span>
-          {completedFigures.length > 0 && (
-            <span className="bg-cyan-500/40 text-cyan-200 text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-              {completedFigures.length}
-            </span>
-          )}
-        </motion.button>
-
-        {/* Theme toggle */}
-        <ThemeToggleButton />
-
-        {/* Logout */}
-        <motion.button whileTap={{ scale: 0.92 }}
-          onClick={async () => { await logout(); navigate('/login', { replace: true }) }}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-black/45 backdrop-blur-md
-                     border border-white/12 text-zinc-400 hover:text-red-400 hover:border-red-500/30
-                     transition-all duration-150 text-xs font-medium">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-          </svg>
-          로그아웃
-        </motion.button>
-
-        {/* Menu */}
-        <motion.button whileTap={{ scale: 0.92 }}
-          onClick={() => setMenuOpen(true)}
-          className="w-9 h-9 rounded-xl bg-black/45 backdrop-blur-md
-                     border border-white/12 text-zinc-400 hover:text-zinc-200
-                     flex items-center justify-center transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-            <path strokeLinecap="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-          </svg>
-        </motion.button>
-      </div>
-
-      {/* ── WASD 힌트 ── */}
-      <WasdHint visible={cameraMode !== 'overview'} isFirst={cameraMode === 'first'} />
-
-      {/* ── Furniture placement menu ── */}
-      <FurnitureMenu />
-
-      {/* ── Real-time chat (bottom-left · Portal → document.body) ── */}
+      {/* ── Chat (bottom-left · Portal) ── */}
       <ChatBox sendMessage={sendMessage} />
 
-      {/* ── Collection side panel ── */}
+      {/* ── Search Collection side panel ── */}
       <AnimatePresence>
         {collectionOpen && (
           <motion.aside key="collection"
@@ -727,16 +779,14 @@ export default function FigureRoomPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Overlay menu ── */}
+      {/* ── Avatar overlay menu ── */}
       <OverlayMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* ── City transition fade ── */}
       <AnimatePresence>
         {exiting && (
-          <motion.div
-            key="fade"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <motion.div key="fade"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="fixed inset-0 z-50 bg-black pointer-events-none"
           />
         )}

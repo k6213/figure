@@ -34,9 +34,6 @@ export function useChat() {
   }, [user])
 
   useEffect(() => {
-    // Don't connect until the user is authenticated (avoids 403 spam when not logged in)
-    if (!isAuthenticated) return
-
     const nickname = resolveNick()
 
     // ── Socket creation ─────────────────────────────────────────────────────────
@@ -90,8 +87,7 @@ export function useChat() {
       socketRef.current = null
       setConnected(false)
     }
-  }, [isAuthenticated, token]) // eslint-disable-line react-hooks/exhaustive-deps
-  // Reconnect when auth state changes (login/logout)
+  }, [token]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Send message — called from ChatBox */
   const sendMessage = useCallback((text) => {

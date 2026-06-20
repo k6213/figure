@@ -219,7 +219,7 @@ const FurnitureItem = forwardRef(function FurnitureItem(
         {children ?? <FurnitureGeometry item={item} isSelected={isSelected} />}
 
         {/* Embedded light */}
-        {item.type === 'lamp' && item.lightProps && (
+        {(item.type === 'lamp' || item.type === 'spotlight') && item.lightProps && (
           <LampLight lightProps={item.lightProps} dimensions={item.dimensions} />
         )}
       </group>

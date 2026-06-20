@@ -512,6 +512,299 @@ function PlantGeometry({ h }) {
   )
 }
 
+// ── 유리 페데스탈 전시대 ──────────────────────────────────────────────────────
+function PedestalGeometry({ w, h, d }) {
+  const bw = w, bh = 0.06, bd = d
+  const colW = w * 0.14, colH = h * 0.62
+  const topW = w, topH = 0.05
+  const glassH = h * 0.30
+  const glassY = h * 0.62 + glassH / 2
+  return (
+    <group>
+      {/* 베이스 */}
+      <mesh position={[0, -h / 2 + bh / 2, 0]} castShadow>
+        <boxGeometry args={[bw, bh, bd]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.7} />
+      </mesh>
+      {/* 칼럼 */}
+      <mesh position={[0, -h / 2 + bh + colH / 2, 0]} castShadow>
+        <boxGeometry args={[colW, colH, colW]} />
+        <meshStandardMaterial color="#f0ece4" roughness={0.5} metalness={0.1} />
+      </mesh>
+      {/* 상단 플랫폼 */}
+      <mesh position={[0, -h / 2 + bh + colH + topH / 2, 0]} castShadow>
+        <boxGeometry args={[topW, topH, topW]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.7} />
+      </mesh>
+      {/* 유리 인클로저 */}
+      {[
+        [0,     glassY, d / 2],
+        [0,     glassY, -d / 2],
+        [w / 2, glassY, 0, Math.PI / 2],
+        [-w / 2, glassY, 0, Math.PI / 2],
+      ].map(([px, py, pz, ry = 0], i) => (
+        <mesh key={i} position={[px, py - h / 2, pz]} rotation={[0, ry, 0]}>
+          <planeGeometry args={[w - 0.01, glassH]} />
+          <meshStandardMaterial color="#c8e0ff" transparent opacity={0.18}
+            roughness={0} metalness={0.5} side={2} />
+        </mesh>
+      ))}
+      {/* 유리 상단 캡 */}
+      <mesh position={[0, -h / 2 + bh + colH + topH + glassH, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[w - 0.01, d - 0.01]} />
+        <meshStandardMaterial color="#c8e0ff" transparent opacity={0.15} roughness={0} side={2} />
+      </mesh>
+      {/* LED 베이스 링 */}
+      <mesh position={[0, -h / 2 + bh + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[colW * 0.7, w / 2 - 0.02, 32]} />
+        <meshStandardMaterial color="#00d4ff" emissive="#00d4ff"
+          emissiveIntensity={3.0} toneMapped={false} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 유리 큐브 케이스 ──────────────────────────────────────────────────────────
+function GlassCubeGeometry({ w, h, d }) {
+  const baseH = h * 0.22
+  const cubeH = h - baseH
+  const panels = [
+    { pos: [0, 0, d / 2],        rot: [0, 0, 0] },
+    { pos: [0, 0, -d / 2],       rot: [0, Math.PI, 0] },
+    { pos: [w / 2, 0, 0],        rot: [0, -Math.PI / 2, 0] },
+    { pos: [-w / 2, 0, 0],       rot: [0, Math.PI / 2, 0] },
+  ]
+  return (
+    <group>
+      {/* 베이스 */}
+      <mesh position={[0, -h / 2 + baseH / 2, 0]} castShadow>
+        <boxGeometry args={[w, baseH, d]} />
+        <meshStandardMaterial color="#111" roughness={0.25} metalness={0.8} />
+      </mesh>
+      {/* 유리 벽 4면 */}
+      {panels.map(({ pos, rot }, i) => (
+        <mesh key={i}
+          position={[pos[0], pos[1] + cubeH / 2 - h / 2 + baseH, pos[2]]}
+          rotation={rot}>
+          <planeGeometry args={[i < 2 ? w - 0.01 : d - 0.01, cubeH]} />
+          <meshStandardMaterial color="#c8e0ff" transparent opacity={0.20}
+            roughness={0} metalness={0.5} side={2} />
+        </mesh>
+      ))}
+      {/* 유리 상단 */}
+      <mesh position={[0, h / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[w - 0.01, d - 0.01]} />
+        <meshStandardMaterial color="#c8e0ff" transparent opacity={0.15} roughness={0} side={2} />
+      </mesh>
+      {/* 메탈 프레임 모서리 */}
+      {[[-w / 2, d / 2], [w / 2, d / 2], [-w / 2, -d / 2], [w / 2, -d / 2]].map(([x, z], i) => (
+        <mesh key={i} position={[x, cubeH / 2 - h / 2 + baseH, z]}>
+          <boxGeometry args={[0.025, cubeH, 0.025]} />
+          <meshStandardMaterial color="#888" roughness={0.3} metalness={0.8} />
+        </mesh>
+      ))}
+      {/* LED 라인 */}
+      <mesh position={[0, -h / 2 + baseH + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[w - 0.06, d - 0.06]} />
+        <meshStandardMaterial color="#fff8e0" emissive="#ffdd88"
+          emissiveIntensity={2.5} toneMapped={false} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 벽면 와이드 디스플레이 선반 ────────────────────────────────────────────────
+function WallDisplayShelfGeometry({ w, h, d }) {
+  const tiers = 3
+  const tierH = h / tiers
+  const SHELF_YS = Array.from({ length: tiers + 1 }, (_, i) => i * tierH - h / 2)
+  return (
+    <group>
+      {/* 뒷판 */}
+      <mesh position={[0, 0, -d / 2 + 0.02]}>
+        <boxGeometry args={[w, h, 0.04]} />
+        <meshStandardMaterial color="#1a1008" roughness={0.4} metalness={0.2} />
+      </mesh>
+      {/* 좌·우 측면 */}
+      {[-w / 2 + 0.025, w / 2 - 0.025].map((x, i) => (
+        <mesh key={i} position={[x, 0, 0]}>
+          <boxGeometry args={[0.05, h, d]} />
+          <meshStandardMaterial color="#1a1008" roughness={0.4} metalness={0.2} />
+        </mesh>
+      ))}
+      {/* 선반 판 (바닥 포함) */}
+      {SHELF_YS.map((y, i) => (
+        <mesh key={i} position={[0, y, 0]}>
+          <boxGeometry args={[w - 0.1, 0.06, d]} />
+          <meshStandardMaterial color="#2a1808" roughness={0.45} metalness={0.3} />
+        </mesh>
+      ))}
+      {/* LED 선반 조명 */}
+      {SHELF_YS.slice(0, -1).map((y, i) => (
+        <mesh key={i} position={[0, y + 0.036, d / 2 - 0.04]}>
+          <boxGeometry args={[w - 0.2, 0.01, 0.014]} />
+          <meshStandardMaterial color="#fff8e0" emissive="#ffeebb"
+            emissiveIntensity={4.0} toneMapped={false} />
+        </mesh>
+      ))}
+      {/* 상단 캡 */}
+      <mesh position={[0, h / 2 + 0.04, 0]}>
+        <boxGeometry args={[w + 0.04, 0.08, d + 0.04]} />
+        <meshStandardMaterial color="#1a1008" roughness={0.4} metalness={0.2} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 가격 키오스크 ─────────────────────────────────────────────────────────────
+function PriceKioskGeometry({ w, h, d }) {
+  return (
+    <group>
+      {/* 베이스 */}
+      <mesh position={[0, -h / 2 + 0.06, 0]}>
+        <boxGeometry args={[w, 0.12, d]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.8} />
+      </mesh>
+      {/* 폴 */}
+      <mesh position={[0, -h / 2 + 0.12 + (h * 0.38), 0]}>
+        <boxGeometry args={[0.08, h * 0.76, 0.08]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.3} metalness={0.75} />
+      </mesh>
+      {/* 스크린 하우징 */}
+      <mesh position={[0, h * 0.25, 0]} castShadow>
+        <boxGeometry args={[w, h * 0.42, d]} />
+        <meshStandardMaterial color="#111" roughness={0.2} metalness={0.9} />
+      </mesh>
+      {/* 메인 스크린 */}
+      <mesh position={[0, h * 0.25, d / 2 + 0.001]}>
+        <planeGeometry args={[w - 0.06, h * 0.36]} />
+        <meshStandardMaterial color="#061525" emissive="#0a3a5a"
+          emissiveIntensity={1.5} toneMapped={false} />
+      </mesh>
+      {/* 가격 표시 발광 */}
+      <mesh position={[0, h * 0.27, d / 2 + 0.003]}>
+        <planeGeometry args={[w - 0.18, h * 0.1]} />
+        <meshStandardMaterial color="#00e5a0" emissive="#00e5a0"
+          emissiveIntensity={2.5} toneMapped={false} />
+      </mesh>
+      {/* FOR SALE 레이블 */}
+      <mesh position={[0, h * 0.18, d / 2 + 0.003]}>
+        <planeGeometry args={[w - 0.24, h * 0.06]} />
+        <meshStandardMaterial color="#ffcc00" emissive="#ffcc00"
+          emissiveIntensity={1.8} toneMapped={false} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 대시보드 스크린 ───────────────────────────────────────────────────────────
+function DashboardScreenGeometry({ w, h, d }) {
+  return (
+    <group>
+      {/* 베젤 */}
+      <mesh castShadow>
+        <boxGeometry args={[w, h, d]} />
+        <meshStandardMaterial color="#111" roughness={0.2} metalness={0.85} />
+      </mesh>
+      {/* 스크린 */}
+      <mesh position={[0, 0, d / 2 + 0.001]}>
+        <planeGeometry args={[w - 0.06, h - 0.06]} />
+        <meshStandardMaterial color="#040e20" emissive="#0a2040"
+          emissiveIntensity={1.2} toneMapped={false} />
+      </mesh>
+      {/* 차트 바 (4개) */}
+      {[0.18, 0.42, 0.62, 0.80].map((x, i) => {
+        const bh = 0.12 + i * 0.04
+        const colors = ['#00e5ff', '#00ff9d', '#ff6b35', '#ffdd00']
+        return (
+          <mesh key={i} position={[x * (w - 0.18) - (w - 0.18) / 2, -h * 0.05, d / 2 + 0.003]}>
+            <planeGeometry args={[0.06, bh]} />
+            <meshStandardMaterial color={colors[i]} emissive={colors[i]}
+              emissiveIntensity={2.0} toneMapped={false} />
+          </mesh>
+        )
+      })}
+      {/* 상단 라인 그래프 */}
+      <mesh position={[0, h * 0.22, d / 2 + 0.002]}>
+        <planeGeometry args={[w - 0.14, h * 0.28]} />
+        <meshStandardMaterial color="#002244" emissive="#003366"
+          emissiveIntensity={0.8} toneMapped={false} />
+      </mesh>
+      {/* 스탠드 */}
+      <mesh position={[0, -h / 2 - 0.08, 0]}>
+        <cylinderGeometry args={[0.04, 0.055, 0.16, 8]} />
+        <meshStandardMaterial color="#222" roughness={0.35} metalness={0.7} />
+      </mesh>
+      <mesh position={[0, -h / 2 - 0.17, 0]}>
+        <cylinderGeometry args={[w * 0.3, w * 0.3, 0.04, 16]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.3} metalness={0.8} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 천장 스포트라이트 ─────────────────────────────────────────────────────────
+function SpotlightGeometry({ w, h }) {
+  return (
+    <group>
+      {/* 코드/로드 */}
+      <mesh position={[0, h * 0.38, 0]}>
+        <cylinderGeometry args={[0.006, 0.006, h * 0.75, 6]} />
+        <meshStandardMaterial color="#222" roughness={0.5} />
+      </mesh>
+      {/* 하우징 */}
+      <mesh position={[0, 0, 0]} castShadow>
+        <cylinderGeometry args={[w * 0.5, w * 0.35, h * 0.22, 12]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.25} metalness={0.85} />
+      </mesh>
+      {/* 리플렉터 내부 */}
+      <mesh position={[0, -h * 0.06, 0]}>
+        <coneGeometry args={[w * 0.45, h * 0.16, 12, 1, true]} />
+        <meshStandardMaterial color="#c8c0b0" roughness={0.1} metalness={0.9} side={2} />
+      </mesh>
+      {/* 발광 전구 */}
+      <mesh position={[0, -h * 0.04, 0]}>
+        <sphereGeometry args={[w * 0.18, 12, 12]} />
+        <meshStandardMaterial color="#fffbe0" emissive="#fff0a0"
+          emissiveIntensity={6.0} toneMapped={false} />
+      </mesh>
+    </group>
+  )
+}
+
+// ── 만화책/만화 스택 ──────────────────────────────────────────────────────────
+function MangaStackGeometry({ w, h, d }) {
+  const COLORS = ['#c8302a','#2450c0','#d87020','#3a8a3a','#7030a0','#c03060','#204890']
+  const count = 6
+  const bookH = h / count
+  return (
+    <group>
+      {Array.from({ length: count }, (_, i) => {
+        const angle = (i % 2 === 0 ? 0.04 : -0.03) * (i * 0.5)
+        const color = COLORS[i % COLORS.length]
+        return (
+          <mesh key={i}
+            position={[Math.sin(angle) * 0.02, -h / 2 + bookH * i + bookH / 2, 0]}
+            rotation={[0, 0, angle]}
+            castShadow>
+            <boxGeometry args={[w - 0.01, bookH - 0.005, d]} />
+            <meshStandardMaterial color={color} roughness={0.85} />
+          </mesh>
+        )
+      })}
+      {/* 표지 흰색 줄 (스파인 디테일) */}
+      {Array.from({ length: count }, (_, i) => (
+        <mesh key={`s-${i}`}
+          position={[w / 2 - 0.008, -h / 2 + bookH * i + bookH / 2, 0]}>
+          <boxGeometry args={[0.006, bookH * 0.7, d - 0.02]} />
+          <meshStandardMaterial color="#f0e8d8" roughness={0.9} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
 // ── 선택 하이라이트 아웃라인 ──────────────────────────────────────────────────
 function SelectionOutline({ dims }) {
   const { w, h, d } = dims
@@ -548,7 +841,14 @@ export default function FurnitureGeometry({ item, isSelected }) {
       break
     case 'carpet':    geo = <CarpetGeometry     w={w} h={h} d={d} />; break
     case 'poster':    geo = <PosterGeometry     w={w} h={h} item={item} />; break
-    case 'plant':     geo = <PlantGeometry      h={h}             />; break
+    case 'plant':          geo = <PlantGeometry           h={h}             />; break
+    case 'pedestal':       geo = <PedestalGeometry        w={w} h={h} d={d} />; break
+    case 'glass-cube':     geo = <GlassCubeGeometry       w={w} h={h} d={d} />; break
+    case 'wall-shelf-wide':geo = <WallDisplayShelfGeometry w={w} h={h} d={d} />; break
+    case 'kiosk':          geo = <PriceKioskGeometry       w={w} h={h} d={d} />; break
+    case 'screen':         geo = <DashboardScreenGeometry  w={w} h={h} d={d} />; break
+    case 'spotlight':      geo = <SpotlightGeometry        w={w} h={h}       />; break
+    case 'manga':          geo = <MangaStackGeometry       w={w} h={h} d={d} />; break
     default:
       geo = (
         <mesh castShadow>

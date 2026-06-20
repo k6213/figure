@@ -30,6 +30,41 @@ function makeShowcaseSlots() {
 // ── Catalog ──────────────────────────────────────────────────────────────────
 export const FURNITURE_CATALOG = {
 
+  // ── Display furniture (figure-specific) ──────────────────────────────────────────
+  display: [
+    {
+      id:          'pedestal-single',
+      name:        'Display Pedestal',
+      type:        'pedestal',
+      category:    'display',
+      modelPath:   null,
+      dimensions:  { w: 0.55, h: 1.35, d: 0.55 },
+      icon:        '🏛',
+      description: 'Single glass pedestal for hero showcase',
+    },
+    {
+      id:          'glass-cube-case',
+      name:        'Glass Cube Case',
+      type:        'glass-cube',
+      category:    'display',
+      modelPath:   null,
+      dimensions:  { w: 0.65, h: 0.88, d: 0.65 },
+      icon:        '🔲',
+      description: 'Square glass display case with LED base',
+    },
+    {
+      id:          'wall-display-shelf',
+      name:        'Wall Display Shelf',
+      type:        'wall-shelf-wide',
+      category:    'display',
+      modelPath:   null,
+      dimensions:  { w: 4.2, h: 2.4, d: 0.38 },
+      wallMount:   true,
+      icon:        '🗃',
+      description: 'Wide 3-tier wall-mounted figure shelf with LED lighting',
+    },
+  ],
+
   // ── Storage furniture ──────────────────────────────────────────────────────────────
   storage: [
     {
@@ -113,6 +148,17 @@ export const FURNITURE_CATALOG = {
   // ── Lighting ──────────────────────────────────────────────────────────────────
   lighting: [
     {
+      id:          'spotlight-pendant',
+      name:        'Spotlight',
+      type:        'spotlight',
+      category:    'lighting',
+      modelPath:   null,
+      dimensions:  { w: 0.22, h: 0.52, d: 0.22 },
+      lightProps:  { color: '#fff4d0', intensity: 90, distance: 8, decay: 2, lightType: 'spot', angle: Math.PI / 10 },
+      icon:        '🔦',
+      description: 'Ceiling pendant spotlight, focused beam',
+    },
+    {
       id:          'lamp-desk',
       name:        'Desk Lamp',
       type:        'lamp',
@@ -149,6 +195,36 @@ export const FURNITURE_CATALOG = {
 
   // ── Decoration ──────────────────────────────────────────────────────────────────
   decoration: [
+    {
+      id:          'price-kiosk',
+      name:        'Price Kiosk',
+      type:        'kiosk',
+      category:    'decoration',
+      modelPath:   null,
+      dimensions:  { w: 0.72, h: 1.58, d: 0.42 },
+      icon:        '🏧',
+      description: 'FOR SALE price display terminal',
+    },
+    {
+      id:          'dashboard-screen',
+      name:        'Dashboard Screen',
+      type:        'screen',
+      category:    'decoration',
+      modelPath:   null,
+      dimensions:  { w: 1.1, h: 0.72, d: 0.1 },
+      icon:        '📊',
+      description: 'Price chart monitor screen',
+    },
+    {
+      id:          'manga-stack',
+      name:        'Manga Stack',
+      type:        'manga',
+      category:    'decoration',
+      modelPath:   null,
+      dimensions:  { w: 0.30, h: 0.26, d: 0.22 },
+      icon:        '📚',
+      description: 'Stack of manga / comic books',
+    },
     {
       id:          'carpet-round',
       name:        'Carpet',
@@ -188,6 +264,7 @@ export const ALL_FURNITURE = Object.values(FURNITURE_CATALOG).flat()
 
 // Category metadata
 export const CATEGORIES = [
+  { key: 'display',    label: 'Display',    icon: '🏛' },
   { key: 'storage',    label: 'Storage',    icon: '🗄' },
   { key: 'furniture',  label: 'Furniture',  icon: '🛋' },
   { key: 'lighting',   label: 'Lighting',   icon: '💡' },

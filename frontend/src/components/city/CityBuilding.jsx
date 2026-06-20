@@ -526,9 +526,6 @@ export default function StudentRoom() {
       {/* ══ Figure display cabinet ══ */}
       <DisplayCabinet />
 
-      {/* ══ Left wall window ══ */}
-      <Window position={[-W + 0.02, 3.8, -1.0]} rotation={[0, Math.PI / 2, 0]} w={3.2} h={2.4} />
-
       {/* ══ Ceiling light fixtures ══ */}
       <CeilingLight position={[0, H - 0.031, -4]} />
       <CeilingLight position={[0, H - 0.031,  3]} />

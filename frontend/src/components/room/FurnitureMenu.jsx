@@ -83,7 +83,7 @@ function CategoryTab({ cat, active, onClick }) {
                   h-[52px] rounded-[10px] overflow-hidden
                   text-[9px] font-semibold tracking-[0.07em] uppercase
                   transition-colors duration-150
-                  ${active ? 'text-zinc-100' : 'text-zinc-600 hover:text-zinc-400'}`}
+                  ${active ? 'text-zinc-100' : 'text-zinc-400 hover:text-zinc-200'}`}
     >
       {/* Sliding active background */}
       {active && (
@@ -99,7 +99,7 @@ function CategoryTab({ cat, active, onClick }) {
       <CatIcon
         catKey={cat.key}
         className={`relative w-[15px] h-[15px] shrink-0 transition-colors
-                    ${active ? 'text-zinc-100' : 'text-zinc-600'}`}
+                    ${active ? 'text-zinc-100' : 'text-zinc-400'}`}
       />
       <span className="relative leading-none truncate w-full text-center px-0.5">
         {cat.label}
@@ -114,8 +114,8 @@ function FurnitureCard({ furniture, onAdd }) {
     <button
       onClick={() => onAdd(furniture)}
       className="flex flex-col items-center justify-start gap-2 px-1.5 py-3 rounded-xl
-                 border border-white/[0.06] bg-white/[0.025]
-                 hover:bg-white/[0.07] hover:border-cyan-500/[0.18]
+                 border border-white/[0.10] bg-white/[0.05]
+                 hover:bg-white/[0.10] hover:border-cyan-500/[0.30]
                  transition-all duration-150 text-center group active:scale-[0.94]
                  min-h-[76px]"
     >
@@ -125,7 +125,7 @@ function FurnitureCard({ furniture, onAdd }) {
                       transition-all duration-150">
         {furniture.icon}
       </div>
-      <span className="text-[9.5px] font-medium text-zinc-400 group-hover:text-zinc-200
+      <span className="text-[9.5px] font-medium text-zinc-200 group-hover:text-white
                        leading-tight transition-colors line-clamp-2 w-full">
         {furniture.name}
       </span>
@@ -215,17 +215,43 @@ function SelectedControls() {
 }
 
 // ── Main panel ─────────────────────────────────────────────────────────────────
-export default function FurnitureMenu() {
-  const [open, setOpen]         = useState(false)
-  const [activeCategory, setActiveCat] = useState('storage')
+// Accepts optional externalOpen / onExternalToggle to be driven from BottomMenuBar
+export default function FurnitureMenu({ externalOpen, onExternalToggle } = {}) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const [activeCategory, setActiveCat]  = useState('storage')
+
+  const controlled = externalOpen !== undefined
+  const open    = controlled ? externalOpen : internalOpen
+  const setOpen = controlled
+    ? (v) => onExternalToggle?.(typeof v === 'function' ? v(externalOpen) : v)
+    : setInternalOpen
 
   const { addItem, removeItem, placedItems } = useRoomStore()
 
   const catItems = FURNITURE_CATALOG[activeCategory] ?? []
 
+  // When controlled externally, hide the FAB (bottom bar takes its place)
+  if (controlled) {
+    return (
+      <AnimatePresence>
+        {open && (
+          <FurniturePanelContent
+            positionClass="absolute bottom-24 right-6"
+            activeCategory={activeCategory}
+            setActiveCat={setActiveCat}
+            catItems={catItems}
+            addItem={addItem}
+            removeItem={removeItem}
+            placedItems={placedItems}
+          />
+        )}
+      </AnimatePresence>
+    )
+  }
+
   return (
     <>
-      {/* FAB toggle */}
+      {/* FAB toggle (standalone mode only) */}
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => setOpen(o => !o)}
@@ -250,133 +276,121 @@ export default function FurnitureMenu() {
         </AnimatePresence>
       </motion.button>
 
-      {/* Panel */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            key="panel"
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{   opacity: 0, y: 8, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-            className="absolute bottom-[4.5rem] right-6 z-30
-                       w-72 max-h-[72vh] flex flex-col
-                       bg-[#06060f]/92 backdrop-blur-2xl
-                       border border-white/[0.07]
-                       rounded-2xl shadow-2xl shadow-black/60
-                       ring-1 ring-inset ring-white/[0.03]
-                       overflow-hidden"
-          >
-            {/* ── Header ── */}
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.06]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-lg bg-cyan-500/[0.12] border border-cyan-500/[0.18]
-                                flex items-center justify-center">
-                  <IconSofa className="w-3.5 h-3.5 text-cyan-400" />
-                </div>
-                <p className="text-[11px] font-semibold text-zinc-200 tracking-wide">Furniture</p>
-              </div>
-              <span className="text-[10px] text-zinc-600 font-mono tabular-nums
-                               bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-full">
-                {placedItems.length} placed
-              </span>
-            </div>
-
-            {/* ── Category tabs — dark segmented control ── */}
-            <div className="grid grid-cols-4 gap-0.5 mx-3 mt-3 mb-1
-                            p-[3px] rounded-xl
-                            bg-black/60 border border-white/[0.05]">
-              {CATEGORIES.map(cat => (
-                <CategoryTab
-                  key={cat.key}
-                  cat={cat}
-                  active={activeCategory === cat.key}
-                  onClick={setActiveCat}
-                />
-              ))}
-            </div>
-
-            {/* ── Furniture grid ── */}
-            <div className="overflow-y-auto flex-1 px-3 py-2.5
-                            [&::-webkit-scrollbar]:w-[3px]
-                            [&::-webkit-scrollbar-track]:bg-transparent
-                            [&::-webkit-scrollbar-thumb]:bg-white/[0.08]
-                            [&::-webkit-scrollbar-thumb]:rounded-full
-                            [&::-webkit-scrollbar-thumb:hover]:bg-white/[0.16]">
-              {catItems.length > 0
-                ? (
-                  <div className="grid grid-cols-3 gap-1.5 items-stretch">
-                    {catItems.map(furniture => (
-                      <FurnitureCard
-                        key={furniture.id}
-                        furniture={furniture}
-                        onAdd={addItem}
-                      />
-                    ))}
-                  </div>
-                )
-                : (
-                  <div className="flex flex-col items-center justify-center py-8 gap-2">
-                    <span className="text-2xl opacity-30">📦</span>
-                    <p className="text-[10px] text-zinc-600">No items in this category</p>
-                  </div>
-                )}
-            </div>
-
-            {/* ── Selected controls ── */}
-            <AnimatePresence>
-              <SelectedControls />
-            </AnimatePresence>
-
-            {/* ── Placed items list ── */}
-            {placedItems.length > 0 && (
-              <div className="border-t border-white/[0.07] mt-0">
-                {/* Section label row */}
-                <div className="flex items-center gap-2 px-4 pt-3 pb-2">
-                  <span className="text-[9px] font-semibold text-zinc-600 uppercase tracking-[0.12em]">
-                    Placed
-                  </span>
-                  <span className="flex-1 h-px bg-white/[0.05]" />
-                  <span className="text-[9px] font-mono text-zinc-700 tabular-nums">
-                    {placedItems.length}
-                  </span>
-                </div>
-                {/* Item rows */}
-                <div className="flex flex-col max-h-[116px] overflow-y-auto px-3 pb-3
-                                [&::-webkit-scrollbar]:w-[3px]
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:bg-white/[0.07]
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb:hover]:bg-white/[0.14]">
-                  {placedItems.map(item => (
-                    <div
-                      key={item.instanceId}
-                      className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg
-                                 hover:bg-white/[0.04] transition-colors group cursor-default"
-                    >
-                      <span className="text-sm leading-none shrink-0 w-5 text-center">
-                        {item.icon}
-                      </span>
-                      <span className="flex-1 text-[10.5px] text-zinc-400 truncate">
-                        {item.name}
-                      </span>
-                      <button
-                        onClick={() => removeItem(item.instanceId)}
-                        className="w-5 h-5 rounded-md flex items-center justify-center shrink-0
-                                   text-zinc-700 hover:text-red-400 hover:bg-red-500/[0.10]
-                                   transition-all opacity-0 group-hover:opacity-100"
-                        title="Remove"
-                      >
-                        <IconTrash className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </motion.div>
+          <FurniturePanelContent
+            positionClass="absolute bottom-[4.5rem] right-6"
+            activeCategory={activeCategory}
+            setActiveCat={setActiveCat}
+            catItems={catItems}
+            addItem={addItem}
+            removeItem={removeItem}
+            placedItems={placedItems}
+          />
         )}
       </AnimatePresence>
     </>
+  )
+}
+
+// ── Shared panel body (used in both standalone & controlled modes) ──────────────
+function FurniturePanelContent({ positionClass = 'absolute bottom-20 right-6', activeCategory, setActiveCat, catItems, addItem, removeItem, placedItems }) {
+  return (
+    <motion.div
+      key="panel"
+      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{   opacity: 0, y: 8, scale: 0.97 }}
+      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+      className={`${positionClass} z-30
+                 w-72 max-h-[72vh] flex flex-col
+                 bg-[#0d0d12]/[0.97] backdrop-blur-xl
+                 border border-white/[0.12]
+                 rounded-2xl shadow-2xl shadow-black/80
+                 overflow-hidden`}
+    >
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.06]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-lg bg-cyan-500/[0.12] border border-cyan-500/[0.18]
+                          flex items-center justify-center">
+            <IconSofa className="w-3.5 h-3.5 text-cyan-400" />
+          </div>
+          <p className="text-[11px] font-semibold text-zinc-200 tracking-wide">Furniture</p>
+        </div>
+        <span className="text-[10px] text-zinc-600 font-mono tabular-nums
+                         bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded-full">
+          {placedItems.length} placed
+        </span>
+      </div>
+
+      {/* ── Category tabs ── */}
+      <div className="grid grid-cols-4 gap-0.5 mx-3 mt-3 mb-1
+                      p-[3px] rounded-xl bg-black/60 border border-white/[0.05]">
+        {CATEGORIES.map(cat => (
+          <CategoryTab key={cat.key} cat={cat} active={activeCategory === cat.key} onClick={setActiveCat} />
+        ))}
+      </div>
+
+      {/* ── Furniture grid ── */}
+      <div className="overflow-y-auto flex-1 px-3 py-2.5
+                      [&::-webkit-scrollbar]:w-[3px]
+                      [&::-webkit-scrollbar-track]:bg-transparent
+                      [&::-webkit-scrollbar-thumb]:bg-white/[0.08]
+                      [&::-webkit-scrollbar-thumb]:rounded-full
+                      [&::-webkit-scrollbar-thumb:hover]:bg-white/[0.16]">
+        {catItems.length > 0
+          ? (
+            <div className="grid grid-cols-3 gap-1.5 items-stretch">
+              {catItems.map(furniture => (
+                <FurnitureCard key={furniture.id} furniture={furniture} onAdd={addItem} />
+              ))}
+            </div>
+          )
+          : (
+            <div className="flex flex-col items-center justify-center py-8 gap-2">
+              <span className="text-2xl opacity-30">📦</span>
+              <p className="text-[10px] text-zinc-600">No items in this category</p>
+            </div>
+          )}
+      </div>
+
+      {/* ── Selected controls ── */}
+      <AnimatePresence>
+        <SelectedControls />
+      </AnimatePresence>
+
+      {/* ── Placed items list ── */}
+      {placedItems.length > 0 && (
+        <div className="border-t border-white/[0.07]">
+          <div className="flex items-center gap-2 px-4 pt-3 pb-2">
+            <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-[0.12em]">Placed</span>
+            <span className="flex-1 h-px bg-white/[0.05]" />
+            <span className="text-[9px] font-mono text-zinc-700 tabular-nums">{placedItems.length}</span>
+          </div>
+          <div className="flex flex-col max-h-[116px] overflow-y-auto px-3 pb-3
+                          [&::-webkit-scrollbar]:w-[3px]
+                          [&::-webkit-scrollbar-track]:bg-transparent
+                          [&::-webkit-scrollbar-thumb]:bg-white/[0.07]
+                          [&::-webkit-scrollbar-thumb]:rounded-full
+                          [&::-webkit-scrollbar-thumb:hover]:bg-white/[0.14]">
+            {placedItems.map(item => (
+              <div key={item.instanceId}
+                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg
+                           hover:bg-white/[0.04] transition-colors group cursor-default">
+                <span className="text-sm leading-none shrink-0 w-5 text-center">{item.icon}</span>
+                <span className="flex-1 text-[10.5px] text-zinc-200 truncate">{item.name}</span>
+                <button onClick={() => removeItem(item.instanceId)}
+                  className="w-5 h-5 rounded-md flex items-center justify-center shrink-0
+                             text-zinc-700 hover:text-red-400 hover:bg-red-500/[0.10]
+                             transition-all opacity-0 group-hover:opacity-100" title="Remove">
+                  <IconTrash className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
   )
 }

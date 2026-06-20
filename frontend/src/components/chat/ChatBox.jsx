@@ -124,8 +124,20 @@ function ChatBoxInner({ sendMessage }) {
 
   const handleSend = useCallback(() => {
     const text = input.trim()
-    if (!text || !isConnected) return
-    sendMessage(text)
+    if (!text) return
+    if (isConnected) {
+      sendMessage(text)
+    } else {
+      // local-only: add to store directly so the user can still see their messages
+      const { addMessage, nickname } = useChatStore.getState()
+      addMessage({
+        id:        `local-${Date.now()}`,
+        type:      'user',
+        nickname:  nickname || 'Me',
+        text,
+        timestamp: new Date().toISOString(),
+      }, true)
+    }
     setInput('')
   }, [input, isConnected, sendMessage])
 
@@ -146,10 +158,9 @@ function ChatBoxInner({ sendMessage }) {
             exit={{   opacity: 0, y: 8,   scale: 0.97 }}
             transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
             className="w-[320px] mb-3 flex flex-col rounded-2xl overflow-hidden
-                       bg-[#06060f]/94 backdrop-blur-2xl
-                       border border-white/[0.07]
-                       shadow-2xl shadow-black/60
-                       ring-1 ring-inset ring-white/[0.03]"
+                       bg-[#0d0d12]/[0.97] backdrop-blur-xl
+                       border border-white/[0.12]
+                       shadow-2xl shadow-black/80"
             style={{ height: 440 }}
           >
             {/* ── Header ── */}
@@ -229,15 +240,15 @@ function ChatBoxInner({ sendMessage }) {
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKey}
                   maxLength={300}
-                  placeholder={isConnected ? 'Type a message…' : 'Connecting…'}
-                  disabled={!isConnected}
+                  placeholder={isConnected ? 'Type a message…' : 'Type a message… (offline)'}
+                  disabled={false}
                   className="flex-1 bg-transparent text-[11.5px] text-zinc-200
                              placeholder:text-zinc-700 outline-none min-w-0
                              disabled:opacity-30"
                 />
                 <button
                   onClick={handleSend}
-                  disabled={!input.trim() || !isConnected}
+                  disabled={!input.trim()}
                   className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0
                              text-cyan-500 hover:text-cyan-300 hover:bg-cyan-500/[0.12]
                              disabled:text-zinc-700 disabled:hover:bg-transparent
@@ -273,7 +284,7 @@ function ChatBoxInner({ sendMessage }) {
                     transition-all duration-200
                     ${isOpen
                       ? 'bg-cyan-500/[0.18] border-cyan-500/35 text-cyan-300'
-                      : 'bg-[#06060f]/80 border-white/[0.09] text-zinc-400 hover:text-zinc-200 hover:border-white/[0.15]'}`}
+                      : 'bg-[#0d0d12]/[0.97] border-white/[0.12] text-zinc-300 hover:text-white hover:border-white/[0.22]'}`}
       >
         <IconChat className="w-4.5 h-4.5" />
 
